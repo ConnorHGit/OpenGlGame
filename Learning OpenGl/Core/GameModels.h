@@ -23,6 +23,7 @@ namespace Models
 		GameModels();
 		~GameModels();
 		void CreateTriangleModel(const std::string& gameModelName);
+		void CreateCubeModel(const std::string& gameModelName);
 		void DeleteModel(const std::string& gameModelName);
 		unsigned int GetModel(const std::string& gameModelName);
 	private:

@@ -34,13 +34,18 @@ void keyPressed(unsigned char key, int x, int y);
 void keyUp(unsigned char key, int x, int y);
 void repaint(int value);
 glm::mat4 GetRotationMatrix(glm::vec3 rotation);
+glm::vec3 DirectionVector(void);
 void MouseMoved(int x, int y);
+
+glm::vec3 CameraForward(glm::mat4 &rotationMat);
+glm::vec3 CameraRight(glm::mat4 &rotationMat);
+glm::vec3 CameraUp(glm::mat4 &rotationMat);
 
 void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(1.0, 0.0, 0.0, 1.0);//clear red
+	glClearColor(1.0, 1.0, 1.0, 1.0);//clear red
 	if (!KeyDown['r']){
-		CameraRotation += glm::vec3(-MousePosition.x / 5000, -MousePosition.y / 5000, 0);
+		CameraRotation += glm::vec3(-MousePosition.x / 1000, -MousePosition.y / 1000, 0);
 		glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_WIDTH) / 2);
 	}
 	ViewMatrix = GetRotationMatrix(CameraRotation) * glm::translate(glm::mat4(1.0f), CameraPosition);
@@ -51,28 +56,31 @@ void renderScene(void) {
 	glUseProgram(program);
 
 	//draw 3 vertices as triangles
+	/*
 	glBindVertexArray(gameModels->GetModel("triangle1"));
 
 	ModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f));
 	glm::mat4 MVP = ProjectionViewMatrix * ModelMatrix;
 	glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, false, &MVP[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
+	*/
+	glBindVertexArray(gameModels->GetModel("cube1"));
+	ModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.3f));
+	glm::mat4 MVP = ProjectionViewMatrix * ModelMatrix;
+	glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, false, &MVP[0][0]);
+	glDrawArrays(GL_QUADS, 0, 24);
 
 	glutSwapBuffers(); 
 
 	//Camera Movement
-	if (KeyDown['w']) CameraPosition.z += 0.1;
+	if (KeyDown['w']) CameraPosition +=  CameraForward(ViewMatrix) * glm::vec3(0.1f);
 
-	if (KeyDown['s']) CameraPosition.z -= 0.1;
+	if (KeyDown['s']) CameraPosition -= CameraForward(ViewMatrix) * glm::vec3(0.1f);
 
-	if (KeyDown['a']) CameraPosition.x += 0.1;
+	if (KeyDown['a']) CameraPosition += CameraRight(ViewMatrix) * glm::vec3(0.1f);
 
-	if (KeyDown['d']) CameraPosition.x -= 0.1;
-
-	if (KeyDown['q']) CameraRotation += glm::vec3(0,0.03,0);
-
-	if (KeyDown['e']) CameraRotation -= glm::vec3(0,0.03,0);
-	//std::cout << CameraRotation.x << " " << CameraRotation.y << " " << std::endl;
+	if (KeyDown['d']) CameraPosition -= CameraRight(ViewMatrix) * glm::vec3(0.1f);
+	//td::cout << CameraRotation.x << " " << CameraRotation.y << " " << std::endl;
 	//Causes window to be redrawn in 16 milliseconds
 	glutTimerFunc(16, repaint, 0);
 }
@@ -86,11 +94,11 @@ void closeCallback(){
 void Init(){
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_LESS);
 
 	gameModels = new Models::GameModels();
-	gameModels->CreateTriangleModel("triangle1");
-
+	//gameModels->CreateTriangleModel("triangle1");
+	gameModels->CreateCubeModel("cube1");
 	//load and compile shaders
 	Core::Shader_Loader shaderLoader;
 	program = shaderLoader.CreateProgram("Shaders\\Vertex_Shader.glsl",
@@ -99,7 +107,7 @@ void Init(){
 }
 
 int main(int argc, char **argv) {
-	ProjectionMatrix = glm::perspective<float>(1.04719755f, 4.0f / 3.0f, 0.1f, 100.f);
+	ProjectionMatrix = glm::perspective<float>(1.084719755f, 4.0f / 3.0f, 0.1f, 100.f);
 	CameraPosition = glm::vec3(0.0f, 0.0f, -10.f);
 	CameraRotation = glm::vec3(0.01f, 0.01f, 0.01f);
 
@@ -107,7 +115,7 @@ int main(int argc, char **argv) {
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(800, 600);
-	glutCreateWindow("Drawing my first triangle");
+	glutCreateWindow("Open GL Game");
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
 	glewInit();
@@ -171,4 +179,16 @@ glm::mat4 GetRotationMatrix(glm::vec3 rotation){
 }
 void MouseMoved(int x, int y){
 	MousePosition = glm::vec3(y - glutGet(GLUT_WINDOW_WIDTH) / 2, x - glutGet(GLUT_WINDOW_WIDTH) / 2,0);
+}
+glm::vec3 CameraForward(glm::mat4 &rotationMat){
+	float* data = glm::value_ptr(rotationMat);
+	return glm::vec3(data[2], data[6], data[10]);
+}
+glm::vec3 CameraRight(glm::mat4 &rotationMat){
+	float* data = glm::value_ptr(rotationMat);
+	return glm::vec3(data[0], data[4], data[8]);
+}
+glm::vec3 CameraUp(glm::mat4 &rotationMat){
+	float* data = glm::value_ptr(rotationMat);
+	return glm::vec3(data[1], data[5], data[9]);
 }
