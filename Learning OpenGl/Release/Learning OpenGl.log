@@ -1,8 +1,9 @@
-﻿Build started 2015-01-18 5:30:39 PM.
+﻿Build started 2015-01-18 6:57:41 PM.
      1>Project "C:\Users\Connor\Source\Repos\OpenGLGame\Learning OpenGl\Learning OpenGl.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\Connor\Source\Repos\OpenGLGame\packages\glm.0.9.6.1\build\native\../..//build/native/include/ /IC:\Users\Connor\Source\Repos\OpenGLGame\packages\nupengl.core.0.0.0.1\build\native\../..//build/native/include/ /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp
          Main.cpp
+     1>Main.cpp(10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Connor\Source\Repos\OpenGLGame\Release\Learning OpenGl.exe" /NOLOGO C:\Users\Connor\Source\Repos\OpenGLGame\packages\nupengl.core.0.0.0.1\build\native\../..//build/native/lib/Win32\v120\glew32.lib C:\Users\Connor\Source\Repos\OpenGLGame\packages\nupengl.core.0.0.0.1\build\native\../..//build/native/lib/Win32\v120\glfw3dll.lib C:\Users\Connor\Source\Repos\OpenGLGame\packages\nupengl.core.0.0.0.1\build\native\../..//build/native/lib/Win32\v120\freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Connor\Source\Repos\OpenGLGame\Release\Learning OpenGl.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Connor\Source\Repos\OpenGLGame\Release\Learning OpenGl.lib" /MACHINE:X86 /SAFESEH Release\GameModels.obj
          Release\VertexFormat.obj
@@ -15,4 +16,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.35
+Time Elapsed 00:00:01.37

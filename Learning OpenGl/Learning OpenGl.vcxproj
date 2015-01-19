@@ -46,6 +46,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -70,6 +71,7 @@
     <ClCompile Include="Core\VertexFormat.h" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Core\Shader_Loader.cpp" />
+    <ClCompile Include="Physics\Body.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -77,6 +79,7 @@
   <ItemGroup>
     <ClInclude Include="Core\GameModels.h" />
     <ClInclude Include="Core\Shader_Loader.h" />
+    <ClInclude Include="Physics\Body.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,6 +6,8 @@
 #include<stdlib.h>
 #include<fstream>
 #include<vector>
+#include<thread>
+#include<ctime>
 #include<glm\glm.hpp>
 #include<glm\gtc\type_ptr.hpp>
 #include<glm\gtc\matrix_transform.hpp>
@@ -32,11 +34,10 @@ bool KeyDown[127];
 
 void keyPressed(unsigned char key, int x, int y);
 void keyUp(unsigned char key, int x, int y);
-void repaint(int value);
 glm::mat4 GetRotationMatrix(glm::vec3 rotation);
 glm::vec3 DirectionVector(void);
 void MouseMoved(int x, int y);
-
+void repaint(int value);
 glm::vec3 CameraForward(glm::mat4 &rotationMat);
 glm::vec3 CameraRight(glm::mat4 &rotationMat);
 glm::vec3 CameraUp(glm::mat4 &rotationMat);
@@ -55,15 +56,6 @@ void renderScene(void) {
 	//use the created program
 	glUseProgram(program);
 
-	//draw 3 vertices as triangles
-	/*
-	glBindVertexArray(gameModels->GetModel("triangle1"));
-
-	ModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f));
-	glm::mat4 MVP = ProjectionViewMatrix * ModelMatrix;
-	glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, false, &MVP[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-	*/
 	glBindVertexArray(gameModels->GetModel("cube1"));
 	ModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.3f));
 	glm::mat4 MVP = ProjectionViewMatrix * ModelMatrix;
@@ -84,9 +76,17 @@ void renderScene(void) {
 	//Causes window to be redrawn in 16 milliseconds
 	glutTimerFunc(16, repaint, 0);
 }
+
+
+
 void repaint(int value){
 	glutPostRedisplay();
 }
+void update(double delta){
+}
+
+
+
 void closeCallback(){
 	std::cout << "GLUT:\t Finished" << std::endl;
 	glutLeaveMainLoop();
