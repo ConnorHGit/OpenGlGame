@@ -16,7 +16,7 @@ void Body::update(float delta){
 	velocity += acceleration * delta;
 	pos += velocity * inverseMass;
 }
-void Body::draw(glm::mat4 ProjectionViewMatrix,GLuint program,Models::GameModels* gameModels){
+void Body::draw(glm::mat4 &ProjectionViewMatrix,GLuint program,Models::GameModels* gameModels){
 	glBindVertexArray(gameModels->GetModel("cube1"));
 	glm::mat4 ModelMatrix = glm::scale(glm::mat4(1.0f), size) * glm::translate(glm::mat4(1.0f),pos);
 	glm::mat4 MVP = ProjectionViewMatrix * ModelMatrix;

@@ -10,7 +10,7 @@ public:
 	Body(int x, int y, int z, int width, int height, int depth);
 	~Body();
 	void update(float delta);
-	void draw(glm::mat4 ViewProjectionMatrix, GLuint program, Models::GameModels* gameModels);
+	void draw(glm::mat4 &ViewProjectionMatrix, GLuint program, Models::GameModels* gameModels);
 	void setMass(float mass);
 	float getMass();
 	float getInverseMass();

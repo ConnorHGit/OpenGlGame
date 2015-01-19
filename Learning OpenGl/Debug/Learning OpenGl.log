@@ -1,17 +1,18 @@
-﻿Build started 2015-01-18 7:04:03 PM.
+﻿Build started 2015-01-19 7:16:25 AM.
      1>Project "C:\Users\Connor\Source\Repos\OpenGLGame\Learning OpenGl\Learning OpenGl.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\Connor\Source\Repos\OpenGLGame\packages\glm.0.9.6.1\build\native\../..//build/native/include/ /IC:\Users\Connor\Source\Repos\OpenGLGame\packages\nupengl.core.0.0.0.1\build\native\../..//build/native/include/ /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp
-         Main.cpp
-     1>c:\users\connor\source\repos\openglgame\learning opengl\main.cpp(10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\Connor\Source\Repos\OpenGLGame\packages\glm.0.9.6.1\build\native\../..//build/native/include/ /IC:\Users\Connor\Source\Repos\OpenGLGame\packages\nupengl.core.0.0.0.1\build\native\../..//build/native/include/ /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Physics\Body.cpp
+         Body.cpp
+     1>c:\users\connor\source\repos\openglgame\learning opengl\physics\body.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Connor\Source\Repos\OpenGLGame\Debug\Learning OpenGl.exe" /INCREMENTAL /NOLOGO C:\Users\Connor\Source\Repos\OpenGLGame\packages\nupengl.core.0.0.0.1\build\native\../..//build/native/lib/Win32\v120\glew32.lib C:\Users\Connor\Source\Repos\OpenGLGame\packages\nupengl.core.0.0.0.1\build\native\../..//build/native/lib/Win32\v120\glfw3dll.lib C:\Users\Connor\Source\Repos\OpenGLGame\packages\nupengl.core.0.0.0.1\build\native\../..//build/native/lib/Win32\v120\freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Connor\Source\Repos\OpenGLGame\Debug\Learning OpenGl.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Connor\Source\Repos\OpenGLGame\Debug\Learning OpenGl.lib" /MACHINE:X86 Debug\GameModels.obj
          Debug\VertexFormat.obj
          Debug\Main.obj
          Debug\Shader_Loader.obj
+         Debug\Body.obj
          Learning OpenGl.vcxproj -> C:\Users\Connor\Source\Repos\OpenGLGame\Debug\Learning OpenGl.exe
      1>Done Building Project "C:\Users\Connor\Source\Repos\OpenGLGame\Learning OpenGl\Learning OpenGl.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.94
+Time Elapsed 00:00:01.33
