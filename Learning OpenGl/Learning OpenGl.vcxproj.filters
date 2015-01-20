@@ -28,6 +28,9 @@
     <ClCompile Include="Physics\Body.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Physics\Manifold.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -38,5 +41,6 @@
     </ClInclude>
     <ClInclude Include="Core\GameModels.h" />
     <ClInclude Include="Physics\Body.h" />
+    <ClInclude Include="Physics\Manifold.h" />
   </ItemGroup>
 </Project>

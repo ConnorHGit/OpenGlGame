@@ -7,10 +7,11 @@
 class Body{
 public:
 	Body(glm::vec3 pos,glm::vec3 size);
-	Body(int x, int y, int z, int width, int height, int depth);
+	Body(float x, float y, float z, float width, float height, float depth);
 	~Body();
+	Body();
 	void update(float delta);
-	void draw(glm::mat4 &ViewProjectionMatrix, GLuint program, Models::GameModels* gameModels);
+	void draw(glm::mat4 &ViewProjectionMatrix, GLuint program);
 	void setMass(float mass);
 	float getMass();
 	float getInverseMass();

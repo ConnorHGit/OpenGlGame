@@ -13,6 +13,8 @@
 #include<glm\gtc\matrix_transform.hpp>
 #include"glm\gtx\projection.hpp"
 #include<math.h>
+#include"Physics/Body.h";
+#include "windows.h";
 
 Models::GameModels* gameModels;
 
@@ -30,7 +32,11 @@ glm::mat4 ProjectionMatrix;
 
 glm::vec3 MousePosition;
 
+std::vector<Body> cubes;
+
 bool KeyDown[127];
+
+bool stop;
 
 void keyPressed(unsigned char key, int x, int y);
 void keyUp(unsigned char key, int x, int y);
@@ -41,6 +47,8 @@ void repaint(int value);
 glm::vec3 CameraForward(glm::mat4 &rotationMat);
 glm::vec3 CameraRight(glm::mat4 &rotationMat);
 glm::vec3 CameraUp(glm::mat4 &rotationMat);
+void update(double delta);
+
 
 void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -56,12 +64,15 @@ void renderScene(void) {
 	//use the created program
 	glUseProgram(program);
 
+	//glBindVertexArray(gameModels->GetModel("cube1"));
+	//ModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.3f));
+	//glm::mat4 MVP = ProjectionViewMatrix * ModelMatrix;
+//	glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, false, &MVP[0][0]);
+//	glDrawArrays(GL_QUADS, 0, 24);
 	glBindVertexArray(gameModels->GetModel("cube1"));
-	ModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.3f));
-	glm::mat4 MVP = ProjectionViewMatrix * ModelMatrix;
-	glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, false, &MVP[0][0]);
-	glDrawArrays(GL_QUADS, 0, 24);
-
+	for (int i = 0; i < cubes.size(); i++){
+		cubes[i].draw(ProjectionViewMatrix, program);
+	}
 	glutSwapBuffers(); 
 
 	//Camera Movement
@@ -73,8 +84,6 @@ void renderScene(void) {
 
 	if (KeyDown['d']) CameraPosition -= CameraRight(ViewMatrix) * glm::vec3(0.1f);
 	//td::cout << CameraRotation.x << " " << CameraRotation.y << " " << std::endl;
-	//Causes window to be redrawn in 16 milliseconds
-	glutTimerFunc(16, repaint, 0);
 }
 
 
@@ -82,11 +91,6 @@ void renderScene(void) {
 void repaint(int value){
 	glutPostRedisplay();
 }
-void update(double delta){
-}
-
-
-
 void closeCallback(){
 	std::cout << "GLUT:\t Finished" << std::endl;
 	glutLeaveMainLoop();
@@ -107,10 +111,11 @@ void Init(){
 }
 
 int main(int argc, char **argv) {
-	ProjectionMatrix = glm::perspective<float>(1.084719755f, 4.0f / 3.0f, 0.1f, 100.f);
+	ProjectionMatrix = glm::perspective<float>(1.084719755f, 4.0f / 3.0f, 0.1f, 1000.f);
 	CameraPosition = glm::vec3(0.0f, 0.0f, -10.f);
 	CameraRotation = glm::vec3(0.01f, 0.01f, 0.01f);
-
+	for (int i = 0; i < 1000;i++)
+	cubes.push_back(Body(1, 1, 1, 1, 1, 1));
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
@@ -123,22 +128,46 @@ int main(int argc, char **argv) {
 	Init();
 
 	// register callbacks
-	glutDisplayFunc(renderScene);
 	glutCloseFunc(closeCallback);
 	glutKeyboardFunc(keyPressed);
 	glutKeyboardUpFunc(keyUp);
 	glutPassiveMotionFunc(MouseMoved);
 
 	glutSetCursor(GLUT_CURSOR_NONE);
+	
+	
+	double timeStep = 1000 / 60;
+	double accum = 0;
+	long start = GetTickCount();
+	while (!stop){
+		start = GetTickCount();
 
-	glutMainLoop();
+		while (accum > timeStep){
+			update(timeStep);
+			accum -= timeStep;
+		}
+
+		renderScene();
+		glutMainLoopEvent();
+
+		long end = GetTickCount();
+		accum += end - start;
+	}
 
 	delete gameModels;
 	glDeleteProgram(program);
+
 	return 0;
+	
 
 }
- 
+
+void update(double delta){
+	for (int i = 0; i < cubes.size(); i++){
+		cubes[i].update(delta);
+	}
+}
+
 void keyPressed(unsigned char key, int x, int y){
 	KeyDown[key] = true;
 }
