@@ -19,6 +19,7 @@ public:
 	glm::vec3 size;
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
+	double restitution;
 private:
 	float mass;
 	float inverseMass;

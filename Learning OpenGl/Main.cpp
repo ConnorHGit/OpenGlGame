@@ -13,9 +13,9 @@
 #include<glm\gtc\matrix_transform.hpp>
 #include"glm\gtx\projection.hpp"
 #include<math.h>
-#include"Physics/Body.h";
-#include "windows.h";
-
+#include"Physics/Body.h"
+#include "windows.h"
+#include "Physics\CollisionDetection.h"
 Models::GameModels* gameModels;
 
 using namespace Core;
@@ -64,26 +64,11 @@ void renderScene(void) {
 	//use the created program
 	glUseProgram(program);
 
-	//glBindVertexArray(gameModels->GetModel("cube1"));
-	//ModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.3f));
-	//glm::mat4 MVP = ProjectionViewMatrix * ModelMatrix;
-//	glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, false, &MVP[0][0]);
-//	glDrawArrays(GL_QUADS, 0, 24);
 	glBindVertexArray(gameModels->GetModel("cube1"));
 	for (int i = 0; i < cubes.size(); i++){
 		cubes[i].draw(ProjectionViewMatrix, program);
 	}
 	glutSwapBuffers(); 
-
-	//Camera Movement
-	if (KeyDown['w']) CameraPosition +=  CameraForward(ViewMatrix) * glm::vec3(0.1f);
-
-	if (KeyDown['s']) CameraPosition -= CameraForward(ViewMatrix) * glm::vec3(0.1f);
-
-	if (KeyDown['a']) CameraPosition += CameraRight(ViewMatrix) * glm::vec3(0.1f);
-
-	if (KeyDown['d']) CameraPosition -= CameraRight(ViewMatrix) * glm::vec3(0.1f);
-	//td::cout << CameraRotation.x << " " << CameraRotation.y << " " << std::endl;
 }
 
 
@@ -112,10 +97,14 @@ void Init(){
 
 int main(int argc, char **argv) {
 	ProjectionMatrix = glm::perspective<float>(1.084719755f, 4.0f / 3.0f, 0.1f, 1000.f);
-	CameraPosition = glm::vec3(0.0f, 0.0f, -10.f);
+
+	CameraPosition = glm::vec3(0,0,-10.0f);
 	CameraRotation = glm::vec3(0.01f, 0.01f, 0.01f);
-	for (int i = 0; i < 1000;i++)
-	cubes.push_back(Body(1, 1, 1, 1, 1, 1));
+	Body a = Body(1, 1, 1, 1, 1, 1);
+	a.velocity = glm::vec3(0, 0.6f, 0);
+	cubes.push_back(a);
+	cubes.push_back(Body(1, 4, 1, 1, 1, 1));
+
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
@@ -139,7 +128,13 @@ int main(int argc, char **argv) {
 	double timeStep = 1000 / 60;
 	double accum = 0;
 	long start = GetTickCount();
+	long end;
+	int i, j;
+	i = j = 0;
 	while (!stop){
+		end = GetTickCount();
+		unsigned short delta = end - start;
+		accum += delta;
 		start = GetTickCount();
 
 		while (accum > timeStep){
@@ -147,11 +142,20 @@ int main(int argc, char **argv) {
 			accum -= timeStep;
 		}
 
+		//FPS Stuff
+		j += delta;
+		i++;
+		if (j > 1000){
+			j = 0;
+			std::cout <<"FPS:" << i << std::endl;
+			i = 0;
+			std::cout << "Thing" << delta << std::endl;
+		}
+		//END FPS Stuff
 		renderScene();
 		glutMainLoopEvent();
 
-		long end = GetTickCount();
-		accum += end - start;
+		std::this_thread::sleep_for(std::chrono::milliseconds((int)fmax(8 - (signed)(GetTickCount() - start),0)));
 	}
 
 	delete gameModels;
@@ -163,9 +167,17 @@ int main(int argc, char **argv) {
 }
 
 void update(double delta){
+	if (KeyDown['w']) CameraPosition += CameraForward(ViewMatrix) * glm::vec3(0.1f);
+
+	if (KeyDown['s']) CameraPosition -= CameraForward(ViewMatrix) * glm::vec3(0.1f);
+
+	if (KeyDown['a']) CameraPosition += CameraRight(ViewMatrix) * glm::vec3(0.1f);
+
+	if (KeyDown['d']) CameraPosition -= CameraRight(ViewMatrix) * glm::vec3(0.1f);
 	for (int i = 0; i < cubes.size(); i++){
 		cubes[i].update(delta);
 	}
+	CollisionDetection::Broadphase(&cubes);
 }
 
 void keyPressed(unsigned char key, int x, int y){

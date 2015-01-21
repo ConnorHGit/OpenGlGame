@@ -72,6 +72,8 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Core\Shader_Loader.cpp" />
     <ClCompile Include="Physics\Body.cpp" />
+    <ClCompile Include="Physics\CollisionDetection.cpp" />
+    <ClCompile Include="Physics\CollisionResolution.cpp" />
     <ClCompile Include="Physics\Manifold.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +83,8 @@
     <ClInclude Include="Core\GameModels.h" />
     <ClInclude Include="Core\Shader_Loader.h" />
     <ClInclude Include="Physics\Body.h" />
+    <ClInclude Include="Physics\CollisionDetection.h" />
+    <ClInclude Include="Physics\CollisionResolution.h" />
     <ClInclude Include="Physics\Manifold.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

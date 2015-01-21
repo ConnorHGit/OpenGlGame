@@ -10,7 +10,7 @@ Body::Body(float x, float y, float z, float width, float height, float depth){
 	pos = glm::vec3(x, y, z);
 	size = glm::vec3(width, height, depth);
 	setMass(size.x * size.y * size.z * 10);
-	velocity = glm::vec3(rand() % 30000 / 10000.0f, rand() % 30000 / 10000.0f, rand() % 30000 / 10000.0f);
+	restitution = 0.2;
 }
 Body::~Body(){
 

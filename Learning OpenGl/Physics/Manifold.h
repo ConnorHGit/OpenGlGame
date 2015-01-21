@@ -4,10 +4,11 @@
 
 class Manifold{
 public:
-	Body a, b;
-	double penetration;
+	Body* a, * b;
+	double penetration,restitution;
 	glm::vec3 normal;
-	Manifold(Body a, Body b, double pen, glm::vec3 normal);
-	Manifold(Body a, Body b);
+	Manifold(Body* a, Body* b, double pen, glm::vec3 normal);
+	Manifold(Body* a, Body* b);
 	Manifold();
+	bool collided;
 };

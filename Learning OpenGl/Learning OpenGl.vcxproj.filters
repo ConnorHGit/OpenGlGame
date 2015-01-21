@@ -31,6 +31,12 @@
     <ClCompile Include="Physics\Manifold.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Physics\CollisionDetection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\CollisionResolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -42,5 +48,7 @@
     <ClInclude Include="Core\GameModels.h" />
     <ClInclude Include="Physics\Body.h" />
     <ClInclude Include="Physics\Manifold.h" />
+    <ClInclude Include="Physics\CollisionDetection.h" />
+    <ClInclude Include="Physics\CollisionResolution.h" />
   </ItemGroup>
 </Project>
