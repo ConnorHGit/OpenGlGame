@@ -28,6 +28,7 @@ void Body::draw(glm::mat4 &ProjectionViewMatrix,GLuint program){
 	glm::mat4 MVP = ProjectionViewMatrix * ModelMatrix;
 	glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, false, &MVP[0][0]);
 	glDrawArrays(GL_QUADS, 0, 24);
+
 }
 void Body::setMass(float mass){
 	Body::mass = mass;

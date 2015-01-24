@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <NuGetPackageImportStamp>e7fc744b</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>7850a2d8</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -47,9 +47,16 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -59,16 +66,20 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core\GameModels.cpp" />
     <ClCompile Include="Core\VertexFormat.h" />
+    <ClCompile Include="LodePNG\lodepng.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Core\Shader_Loader.cpp" />
     <ClCompile Include="Physics\Body.cpp" />
@@ -82,6 +93,7 @@
   <ItemGroup>
     <ClInclude Include="Core\GameModels.h" />
     <ClInclude Include="Core\Shader_Loader.h" />
+    <ClInclude Include="LodePNG\lodepng.h" />
     <ClInclude Include="Physics\Body.h" />
     <ClInclude Include="Physics\CollisionDetection.h" />
     <ClInclude Include="Physics\CollisionResolution.h" />
@@ -92,6 +104,10 @@
     <Import Project="..\packages\nupengl.core.redist.0.0.0.1\build\native\nupengl.core.redist.targets" Condition="Exists('..\packages\nupengl.core.redist.0.0.0.1\build\native\nupengl.core.redist.targets')" />
     <Import Project="..\packages\nupengl.core.0.0.0.1\build\native\nupengl.core.targets" Condition="Exists('..\packages\nupengl.core.0.0.0.1\build\native\nupengl.core.targets')" />
     <Import Project="..\packages\glm.0.9.6.1\build\native\glm.targets" Condition="Exists('..\packages\glm.0.9.6.1\build\native\glm.targets')" />
+    <Import Project="..\packages\glfw.redist.3.0.4.3\build\native\glfw.redist.targets" Condition="Exists('..\packages\glfw.redist.3.0.4.3\build\native\glfw.redist.targets')" />
+    <Import Project="..\packages\glfw.3.0.4.3\build\native\glfw.targets" Condition="Exists('..\packages\glfw.3.0.4.3\build\native\glfw.targets')" />
+    <Import Project="..\packages\DevIL.redist.1.7.8\build\native\DevIL.redist.targets" Condition="Exists('..\packages\DevIL.redist.1.7.8\build\native\DevIL.redist.targets')" />
+    <Import Project="..\packages\DevIL.1.7.8\build\native\DevIL.targets" Condition="Exists('..\packages\DevIL.1.7.8\build\native\DevIL.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -100,5 +116,9 @@
     <Error Condition="!Exists('..\packages\nupengl.core.redist.0.0.0.1\build\native\nupengl.core.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nupengl.core.redist.0.0.0.1\build\native\nupengl.core.redist.targets'))" />
     <Error Condition="!Exists('..\packages\nupengl.core.0.0.0.1\build\native\nupengl.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nupengl.core.0.0.0.1\build\native\nupengl.core.targets'))" />
     <Error Condition="!Exists('..\packages\glm.0.9.6.1\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glm.0.9.6.1\build\native\glm.targets'))" />
+    <Error Condition="!Exists('..\packages\glfw.redist.3.0.4.3\build\native\glfw.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glfw.redist.3.0.4.3\build\native\glfw.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\glfw.3.0.4.3\build\native\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glfw.3.0.4.3\build\native\glfw.targets'))" />
+    <Error Condition="!Exists('..\packages\DevIL.redist.1.7.8\build\native\DevIL.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\DevIL.redist.1.7.8\build\native\DevIL.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\DevIL.1.7.8\build\native\DevIL.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\DevIL.1.7.8\build\native\DevIL.targets'))" />
   </Target>
 </Project>

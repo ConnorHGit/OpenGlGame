@@ -56,7 +56,7 @@ void GameModels::CreateCubeModel(const std::string& gameModelName){
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	std::vector<VertexFormat> verticies;
+	std::vector<glm::vec3> verticies;
 	glm::vec3 ver1 = glm::vec3(-1.0f, 1.0f, 1.0f);
 	glm::vec3 ver2 = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec3 ver3 = glm::vec3(1.0f, -1.0f, 1.0f);
@@ -67,48 +67,87 @@ void GameModels::CreateCubeModel(const std::string& gameModelName){
 	glm::vec3 ver7 = glm::vec3(1.0f, -1.0f, -1.0f);
 	glm::vec3 ver8 = glm::vec3(-1.0f, -1.0f, -1.0f);
 
-	verticies.push_back(VertexFormat(ver1, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver2, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver3, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver4, glm::vec4(1, 0, 0, 1)));
 
-	verticies.push_back(VertexFormat(ver2, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver6, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver7, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver3, glm::vec4(1, 0, 0, 1)));
+	float UV_DATA[] = {
+		0,0,
+		0.33,0,
+		0,0.5,
+		0.33,0.5,
 
-	verticies.push_back(VertexFormat(ver5, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver6, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver7, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver8, glm::vec4(1, 0, 0, 1)));
+		0.33, 0,
+		0.66, 0,
+		0.33, 0.5,
+		0.66, 0.5,
 
-	verticies.push_back(VertexFormat(ver1, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver5, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver8, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver4, glm::vec4(1, 0, 0, 1)));
+		0.66, 0,
+		1, 0,
+		0.66, 0.5,
+		1, 0.5,
 
-	verticies.push_back(VertexFormat(ver1, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver2, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver6, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver5, glm::vec4(1, 0, 0, 1)));
+		0, 0.5,
+		0.33, 0.5,
+		0, 1,
+		0.33, 1,
 
-	verticies.push_back(VertexFormat(ver4, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver3, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver8, glm::vec4(1, 0, 0, 1)));
-	verticies.push_back(VertexFormat(ver6, glm::vec4(1, 0, 0, 1)));
+		0.33, 0.5,
+		0.66, 0.5,
+		0.33, 1,
+		0.66, 1,
+		0.66, 0.5,
+		1, 0.5,
+		0.66, 1,
+		1, 1,
+	};
+
+	verticies.push_back(ver1);
+	verticies.push_back(ver2);
+	verticies.push_back(ver3);
+	verticies.push_back(ver4);
+	
+	verticies.push_back(ver2);
+	verticies.push_back(ver6);
+	verticies.push_back(ver7);
+	verticies.push_back(ver3);
+
+	verticies.push_back(ver5);
+	verticies.push_back(ver6);
+	verticies.push_back(ver7);
+	verticies.push_back(ver8);
+
+	verticies.push_back(ver1);
+	verticies.push_back(ver5);
+	verticies.push_back(ver8);
+	verticies.push_back(ver4);
+
+	verticies.push_back(ver1);
+	verticies.push_back(ver2);
+	verticies.push_back(ver6);
+	verticies.push_back(ver5);
+
+	verticies.push_back(ver4);
+	verticies.push_back(ver3);
+	verticies.push_back(ver8);
+	verticies.push_back(ver6);
+	
 	//For Commit
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexFormat) * verticies.size(), &verticies[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * verticies.size(), &verticies[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 
+	
+	unsigned int vbo2;
+	glGenBuffers(1, &vbo2);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * 48, &UV_DATA[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)16);
-
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
+	
 	Model myModel;
 	myModel.vao = vao;
 	myModel.vbos.push_back(vbo);
+	//myModel.vbos.push_back(vbo2);
 	GameModelList[gameModelName] = myModel;
 }
 void GameModels::DeleteModel(const std::string& gameModelName){

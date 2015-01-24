@@ -16,6 +16,7 @@
 #include"Physics/Body.h"
 #include "windows.h"
 #include "Physics\CollisionDetection.h"
+#include "LodePNG\lodepng.h"
 Models::GameModels* gameModels;
 
 using namespace Core;
@@ -48,8 +49,6 @@ glm::vec3 CameraForward(glm::mat4 &rotationMat);
 glm::vec3 CameraRight(glm::mat4 &rotationMat);
 glm::vec3 CameraUp(glm::mat4 &rotationMat);
 void update(double delta);
-
-
 void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(1.0, 1.0, 1.0, 1.0);//clear red
@@ -60,7 +59,7 @@ void renderScene(void) {
 	ViewMatrix = GetRotationMatrix(CameraRotation) * glm::translate(glm::mat4(1.0f), CameraPosition);
 
 	glm::mat4 ProjectionViewMatrix = ProjectionMatrix * ViewMatrix;
-
+	
 	//use the created program
 	glUseProgram(program);
 
@@ -100,10 +99,7 @@ int main(int argc, char **argv) {
 
 	CameraPosition = glm::vec3(0,0,-10.0f);
 	CameraRotation = glm::vec3(0.01f, 0.01f, 0.01f);
-	Body a = Body(1, 1, 1, 1, 1, 1);
-	a.velocity = glm::vec3(0, 0.6f, 0);
-	cubes.push_back(a);
-	cubes.push_back(Body(1, 4, 1, 1, 1, 1));
+	cubes.push_back(Body(1, -1, 1, 1, 1, 1));
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -116,6 +112,18 @@ int main(int argc, char **argv) {
 
 	Init();
 
+	unsigned char* imgData;
+	unsigned int w, h;
+	unsigned err = lodepng_decode24_file(&imgData,&w,&h,"Assets/Test.png");
+	if (err) std::cout << "decoder error " << err << ": " << lodepng_error_text(err) << std::endl;
+	GLuint textID;
+	glGenTextures(1, &textID);
+	glBindTexture(GL_TEXTURE_2D, textID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, imgData);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glUniform1i(glGetUniformLocation(program, "textSamp"), 0);
 	// register callbacks
 	glutCloseFunc(closeCallback);
 	glutKeyboardFunc(keyPressed);

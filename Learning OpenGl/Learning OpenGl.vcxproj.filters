@@ -11,6 +11,9 @@
     <Filter Include="Source Files\Physics">
       <UniqueIdentifier>{3369c164-2ddb-40b0-a3a1-5482e5521331}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LodePNG">
+      <UniqueIdentifier>{81d2d200-559f-48e5-b7fc-7d953de7e0ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -37,6 +40,9 @@
     <ClCompile Include="Physics\CollisionResolution.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LodePNG\lodepng.cpp">
+      <Filter>LodePNG</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -50,5 +56,8 @@
     <ClInclude Include="Physics\Manifold.h" />
     <ClInclude Include="Physics\CollisionDetection.h" />
     <ClInclude Include="Physics\CollisionResolution.h" />
+    <ClInclude Include="LodePNG\lodepng.h">
+      <Filter>LodePNG</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
