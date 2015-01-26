@@ -77,6 +77,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="Core\GameModels.cpp" />
     <ClCompile Include="Core\VertexFormat.h" />
     <ClCompile Include="LodePNG\lodepng.cpp" />
@@ -89,8 +90,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Shaders\Fragment_Shader.glsl" />
+    <None Include="Shaders\Vertex_Shader.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Core\GameModels.h" />
     <ClInclude Include="Core\Shader_Loader.h" />
     <ClInclude Include="LodePNG\lodepng.h" />
@@ -98,6 +102,9 @@
     <ClInclude Include="Physics\CollisionDetection.h" />
     <ClInclude Include="Physics\CollisionResolution.h" />
     <ClInclude Include="Physics\Manifold.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Shaders\New Text Document.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -17,6 +17,7 @@
 #include "windows.h"
 #include "Physics\CollisionDetection.h"
 #include "LodePNG\lodepng.h"
+#include "Character.h"
 Models::GameModels* gameModels;
 
 using namespace Core;
@@ -33,11 +34,13 @@ glm::mat4 ProjectionMatrix;
 
 glm::vec3 MousePosition;
 
-std::vector<Body> cubes;
+std::vector<Body*> cubes;
 
 bool KeyDown[127];
 
 bool stop;
+
+Character player;
 
 void keyPressed(unsigned char key, int x, int y);
 void keyUp(unsigned char key, int x, int y);
@@ -48,7 +51,9 @@ void repaint(int value);
 glm::vec3 CameraForward(glm::mat4 &rotationMat);
 glm::vec3 CameraRight(glm::mat4 &rotationMat);
 glm::vec3 CameraUp(glm::mat4 &rotationMat);
+float clamp(float min, float val, float max);
 void update(double delta);
+
 void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(1.0, 1.0, 1.0, 1.0);//clear red
@@ -56,7 +61,7 @@ void renderScene(void) {
 		CameraRotation += glm::vec3(-MousePosition.x / 1000, -MousePosition.y / 1000, 0);
 		glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_WIDTH) / 2);
 	}
-	ViewMatrix = GetRotationMatrix(CameraRotation) * glm::translate(glm::mat4(1.0f), CameraPosition);
+	ViewMatrix = GetRotationMatrix(CameraRotation) * glm::translate(glm::mat4(1.0f), player.pos * glm::vec3(-1, -1, -1));
 
 	glm::mat4 ProjectionViewMatrix = ProjectionMatrix * ViewMatrix;
 	
@@ -65,7 +70,7 @@ void renderScene(void) {
 
 	glBindVertexArray(gameModels->GetModel("cube1"));
 	for (int i = 0; i < cubes.size(); i++){
-		cubes[i].draw(ProjectionViewMatrix, program);
+		cubes[i]->draw(ProjectionViewMatrix, program);
 	}
 	glutSwapBuffers(); 
 }
@@ -99,8 +104,12 @@ int main(int argc, char **argv) {
 
 	CameraPosition = glm::vec3(0,0,-10.0f);
 	CameraRotation = glm::vec3(0.01f, 0.01f, 0.01f);
-	cubes.push_back(Body(1, -1, 1, 1, 1, 1));
-
+	Body ground = Body(1, -1, 1, 100, 1, 100);
+	ground.setMass(0);
+	cubes.push_back(&ground);
+	player = Character(1, 40, 1, 1, 4, 1);
+	player.acceleration = glm::vec3(0, -0.01, 0);
+	cubes.push_back(&player);
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
@@ -175,15 +184,15 @@ int main(int argc, char **argv) {
 }
 
 void update(double delta){
-	if (KeyDown['w']) CameraPosition += CameraForward(ViewMatrix) * glm::vec3(0.1f);
+	if (KeyDown['w']) player.pos += (CameraForward(ViewMatrix) * glm::vec3(0.3f) * glm::vec3(-1,0,-1));
 
-	if (KeyDown['s']) CameraPosition -= CameraForward(ViewMatrix) * glm::vec3(0.1f);
+	if (KeyDown['s']) player.pos -= (CameraForward(ViewMatrix) * glm::vec3(0.3f) * glm::vec3(-1, 0, -1));
 
-	if (KeyDown['a']) CameraPosition += CameraRight(ViewMatrix) * glm::vec3(0.1f);
+	if (KeyDown['a']) player.pos += (CameraRight(ViewMatrix) * glm::vec3(0.3f) * glm::vec3(-1, 0, -1));
 
-	if (KeyDown['d']) CameraPosition -= CameraRight(ViewMatrix) * glm::vec3(0.1f);
+	if (KeyDown['d']) player.pos -= (CameraRight(ViewMatrix) * glm::vec3(0.3f) * glm::vec3(-1, 0, -1));
 	for (int i = 0; i < cubes.size(); i++){
-		cubes[i].update(delta);
+		cubes[i]->update(delta);
 	}
 	CollisionDetection::Broadphase(&cubes);
 }
@@ -240,4 +249,9 @@ glm::vec3 CameraRight(glm::mat4 &rotationMat){
 glm::vec3 CameraUp(glm::mat4 &rotationMat){
 	float* data = glm::value_ptr(rotationMat);
 	return glm::vec3(data[1], data[5], data[9]);
+}
+float clamp(float min, float val, float max){
+	if (val < min)return min;
+	if (val > max)return max;
+	return val;
 }

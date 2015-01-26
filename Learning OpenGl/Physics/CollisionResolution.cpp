@@ -22,8 +22,11 @@ void ResolveVelocity(Manifold m){
 	glm::vec3 impulse = m.normal * moveIMass;
 	m.a->velocity = m.a->velocity + (impulse * m.a->getInverseMass());
 	m.b->velocity = m.b->velocity + (impulse * -m.b->getInverseMass());
-	std::cout << m.b->velocity.y << std::endl;
 }
 void ResolvePenetration(Manifold m){
-
+	std::cout << m.penetration << std::endl;
+	double totalIMass = m.a->getInverseMass() + m.b->getInverseMass();
+	glm::vec3 movePerImass = m.normal * (float)(m.penetration / totalIMass);
+	m.a->pos += movePerImass * -m.a->getInverseMass();
+	m.b->pos += movePerImass * m.b->getInverseMass();
 }

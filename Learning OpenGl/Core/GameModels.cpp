@@ -93,41 +93,43 @@ void GameModels::CreateCubeModel(const std::string& gameModelName){
 		0.66, 0.5,
 		0.33, 1,
 		0.66, 1,
+
 		0.66, 0.5,
 		1, 0.5,
 		0.66, 1,
 		1, 1,
 	};
-
+	//Front
 	verticies.push_back(ver1);
 	verticies.push_back(ver2);
 	verticies.push_back(ver3);
 	verticies.push_back(ver4);
-	
-	verticies.push_back(ver2);
+	//Right
+    verticies.push_back(ver2);
 	verticies.push_back(ver6);
 	verticies.push_back(ver7);
 	verticies.push_back(ver3);
-
+	//Back
 	verticies.push_back(ver5);
 	verticies.push_back(ver6);
 	verticies.push_back(ver7);
 	verticies.push_back(ver8);
-
+	//Left
 	verticies.push_back(ver1);
 	verticies.push_back(ver5);
 	verticies.push_back(ver8);
 	verticies.push_back(ver4);
-
+	//Top
 	verticies.push_back(ver1);
 	verticies.push_back(ver2);
 	verticies.push_back(ver6);
 	verticies.push_back(ver5);
-
+	//Bottom
 	verticies.push_back(ver4);
 	verticies.push_back(ver3);
+	verticies.push_back(ver7);
 	verticies.push_back(ver8);
-	verticies.push_back(ver6);
+
 	
 	//For Commit
 	glGenBuffers(1, &vbo);

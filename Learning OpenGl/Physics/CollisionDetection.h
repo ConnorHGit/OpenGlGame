@@ -6,5 +6,5 @@
 #include <iostream>
 class CollisionDetection{
 public:
-	static void Broadphase(std::vector<Body>* bodies);
+	static void Broadphase(std::vector<Body*>* bodies);
 };

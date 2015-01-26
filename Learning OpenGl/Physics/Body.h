@@ -13,6 +13,7 @@ public:
 	void update(float delta);
 	void draw(glm::mat4 &ViewProjectionMatrix, GLuint program);
 	void setMass(float mass);
+	bool isVisible;
 	float getMass();
 	float getInverseMass();
 	glm::vec3 pos;
