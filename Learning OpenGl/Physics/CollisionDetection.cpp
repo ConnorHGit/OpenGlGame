@@ -23,7 +23,7 @@ Manifold detect(Body* a, Body* b){
 	m.collided = false;
 
 	if (a->pos.x > b->pos.x + b->size.x * 2|| a->pos.x + a->size.x * 2< b->pos.x)return m;
-	if (a->pos.y > b->pos.y + b->size.y * 2 || a->pos.y + a->size.y * 2 < b->pos.y)return m;
+	if (a->pos.y > b->pos.y + b->size.y * 2|| a->pos.y + a->size.y * 2< b->pos.y)return m;
 	if (a->pos.z > b->pos.z + b->size.z * 2|| a->pos.z + a->size.z * 2< b->pos.z)return m;
 
 	m.collided = true;

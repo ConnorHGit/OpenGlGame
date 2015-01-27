@@ -65,8 +65,13 @@
       <Filter>LodePNG</Filter>
     </ClInclude>
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Main.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Shaders\New Text Document.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Brick.png" />
+    <Image Include="Assets\Grass.png" />
   </ItemGroup>
 </Project>

@@ -98,6 +98,7 @@
     <ClInclude Include="Core\GameModels.h" />
     <ClInclude Include="Core\Shader_Loader.h" />
     <ClInclude Include="LodePNG\lodepng.h" />
+    <ClInclude Include="Main.h" />
     <ClInclude Include="Physics\Body.h" />
     <ClInclude Include="Physics\CollisionDetection.h" />
     <ClInclude Include="Physics\CollisionResolution.h" />
@@ -105,6 +106,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Shaders\New Text Document.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Brick.png" />
+    <Image Include="Assets\Grass.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
