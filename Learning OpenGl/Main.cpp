@@ -19,7 +19,6 @@
 #include "Physics\CollisionDetection.h"
 #include "LodePNG\lodepng.h"
 #include "Character.h"
-
 Models::GameModels* gameModels;
 
 using namespace Core;
@@ -42,9 +41,11 @@ bool KeyDown[127];
 
 bool stop;
 
+float delta;
+
 Character player;
 
-MAIN::std::map <std::string, GLuint> textures;
+MAIN::std::map <char*,GLuint> textures;
 
 void keyPressed(unsigned char key, int x, int y);
 void keyUp(unsigned char key, int x, int y);
@@ -62,13 +63,12 @@ float reduceAbs(float val,float decrease);
 glm::vec3 printVec(glm::vec3 print,char* mes);
 	void renderScene(void) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.25882352941176470588235294117647, 0.38431372549019607843137254901961 , 1.0, 1.0);//clear red
+		glClearColor(0.25882352941176470588235294117647, 0.38431372549019607843137254901961 , 1.0, 1.0);//clear sky blue
 		if (!KeyDown['r']){
 			CameraRotation += glm::vec3(-MousePosition.x / 1000, -MousePosition.y / 1000, 0);
 			glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_WIDTH) / 2);
 		}
-		std::cout << "WHY NO WORK" << KeyDown['r'] << std::endl;
-		ViewMatrix = GetRotationMatrix(CameraRotation) * glm::translate(glm::mat4(1.0f), (player.pos + glm::vec3(0,player.size.y * 2,0)) * glm::vec3(-1, -1, -1));
+		ViewMatrix = GetRotationMatrix(CameraRotation) * glm::translate(glm::mat4(1.0f), (player.pos + glm::vec3(0,player.size.y,0)) * glm::vec3(-1, -1, -1));
 		glm::mat4 ProjectionViewMatrix = ProjectionMatrix * ViewMatrix;
 
 		//use the created program
@@ -78,10 +78,15 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		for (int i = 0; i < cubes.size(); i++){
 			cubes[i]->draw(ProjectionViewMatrix, program);
 		}
+
 		glutSwapBuffers();
 	}
 
-
+	void MousePressed(int button, int state, int x, int y){
+		if (state == GLUT_LEFT_BUTTON){
+			
+		}
+	}
 
 	void repaint(int value){
 		glutPostRedisplay();
@@ -107,27 +112,24 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 
 	int main(int argc, char **argv) {
 		ProjectionMatrix = glm::perspective<float>(1.084719755f, 4.0f / 3.0f, 0.1f, 10000.f);
-
 		CameraPosition = glm::vec3(0, 0, -10.0f);
 		CameraRotation = glm::vec3(0.01f, 0.01f, 0.01f);
-		Body ground = Body(1, -1, 1, 10000, 10, 10000,"Grass");
+		Body ground = Body(2, 0, 1, 100, 50, 100,"Floor");
 		ground.setMass(0);
 		cubes.push_back(&ground);
-		player = Character(1, 40, 1, 1, 1, 1,"Grass");
+		player = Character(30, 5 , 30, 1, 1, 1,"Brick");
 		player.acceleration = glm::vec3(0, -0.03, 0);
 		cubes.push_back(&player);
-		Body b = Body(30, 200,30, 1, 1, 1,"Brick");
+		Body b = Body(30, 200,30, 1, 1, 1,"Grass");
 		//b.setMass(0);
 		b.acceleration = glm::vec3(0, -0.03, 0);
 		cubes.push_back(&b);
-		Body c = Body(30, 1, 30, 1, 1, 1, "Brick");
 	//	c.setMass(0);
 	//	c.acceleration = glm::vec3(0, -0.03, 0);
-		cubes.push_back(&c);
 		glutInit(&argc, argv);
 		glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 		glutInitWindowPosition(100, 100);
-		glutInitWindowSize(800, 600);
+		glutInitWindowSize(1024, 768);
 		glutCreateWindow("Open GL Game");
 		glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
@@ -137,12 +139,14 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 
 		LoadTexture("Brick", "Assets/Brick.png");
 		LoadTexture("Grass", "Assets/Grass.png");
+		LoadTexture("Floor", "Assets/Floor.png");
 		// register callbacks
 		glutCloseFunc(closeCallback);
 		glutKeyboardFunc(keyPressed);
 		glutKeyboardUpFunc(keyUp);
 		glutPassiveMotionFunc(MouseMoved);
 		glutMotionFunc(MouseMoved);
+		glutMouseFunc(MousePressed);
 		glutSetCursor(GLUT_CURSOR_NONE);
 
 
@@ -155,6 +159,7 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		while (!stop){
 			end = GetTickCount();
 			unsigned short delta = end - start;
+			MAIN::delta = delta;
 			accum += delta;
 			start = GetTickCount();
 
@@ -170,12 +175,14 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 				j = 0;
 				std::cout << "FPS:" << i << std::endl;
 				i = 0;
-				std::cout << "Thing" << delta << std::endl;
+				std::cout << "Thing" << GetTickCount() - start << std::endl;
 			}
+
 			//END FPS Stuff
 			renderScene();
 			glutMainLoopEvent();
 
+		
 			std::this_thread::sleep_for(std::chrono::milliseconds((int)fmax(8 - (signed)(GetTickCount() - start), 0)));
 		}
 
@@ -195,8 +202,6 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		if (KeyDown['a']) player.pos += (CameraRight(ViewMatrix) * glm::vec3(0.6f) * glm::vec3(-1, 0, -1));
 
 		if (KeyDown['d']) player.pos -= (CameraRight(ViewMatrix) * glm::vec3(0.6f) * glm::vec3(-1, 0, -1));
-
-		if (KeyDown[' ']) player.velocity += (player.velocity.y < 8 ? glm::vec3(0, 3, 0) : glm::vec3(0));
 		player.velocity.x = reduceAbs(player.velocity.x, 0.2);
 		player.velocity.y = reduceAbs(player.velocity.y, 0.2);
 		player.velocity.z = reduceAbs(player.velocity.z, 0.2);
@@ -288,9 +293,9 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		glGenTextures(1, &textID);
 		glBindTexture(GL_TEXTURE_2D, textID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, imgData);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glUniform1i(glGetUniformLocation(program, "textSamp"), 0);
-		textures[textname] = textID;
+		textures.insert(std::pair<char*, GLuint>(textname, textID));
 	}

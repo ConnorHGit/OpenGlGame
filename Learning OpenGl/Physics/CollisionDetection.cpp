@@ -4,12 +4,17 @@ Manifold detect(Body* a, Body* b);
 void CollisionDetection::Broadphase(std::vector<Body*>* bodies){
 	std::vector<Manifold> manifolds;
 	for (signed int i = 0; i < (signed)(bodies->size() - 1); i++){
+		(*bodies)[i]->touching.clear();
+	}
+	for (signed int i = 0; i < (signed)(bodies->size() - 1); i++){
+		Body* a = (*bodies)[i];
 		for (signed int j = i + 1; j < (signed)(bodies->size()); j++){
-			Body* a = (*bodies)[i];
 			Body* b = (*bodies)[j];
 			if (a->getMass() == 0 && b->getMass() == 0)continue;
 			Manifold m = detect(a, b);
 			if (m.collided){
+				m.a->touching.push_back(b);
+				m.b->touching.push_back(a);
 				//std::cout << "Collided" << std::endl;
 				manifolds.push_back(m);
 			}
@@ -22,17 +27,17 @@ Manifold detect(Body* a, Body* b){
 
 	m.collided = false;
 
-	if (a->pos.x > b->pos.x + b->size.x * 2|| a->pos.x + a->size.x * 2< b->pos.x)return m;
-	if (a->pos.y > b->pos.y + b->size.y * 2|| a->pos.y + a->size.y * 2< b->pos.y)return m;
-	if (a->pos.z > b->pos.z + b->size.z * 2|| a->pos.z + a->size.z * 2< b->pos.z)return m;
+	if (a->pos.x - a->size.x / 2 > b->pos.x + b->size.x || a->pos.x + a->size.x / 2 < b->pos.x - b->size.x / 2)return m;
+	if (a->pos.y - a->size.y / 2 > b->pos.y + b->size.y || a->pos.y + a->size.y / 2 < b->pos.y - b->size.y / 2)return m;
+	if (a->pos.z - a->size.z / 2 > b->pos.z + b->size.z || a->pos.z + a->size.z / 2 < b->pos.z - b->size.z / 2)return m;
 
 	m.collided = true;
 
-	glm::vec3 halfExtA = a->size;
-	glm::vec3 halfExtB = b->size;
+	glm::vec3 halfExtA = a->size / 2.0f;
+	glm::vec3 halfExtB = b->size / 2.0f;
 
-	glm::vec3 centA = a->pos + halfExtA;
-	glm::vec3 centB = b->pos + halfExtB;
+	glm::vec3 centA = a->pos;
+	glm::vec3 centB = b->pos;
 
 	double hX = halfExtA.x + halfExtB.x;
 	double hY = halfExtA.y + halfExtB.y;
@@ -56,7 +61,6 @@ Manifold detect(Body* a, Body* b){
 			m.normal = glm::vec3(1, 0, 0);
 	}
 	else if (max == oY){
-		std::cout << "YLAP" << oY << std::endl;
 		m.penetration = oY;
 		if (centA.y > centB.y)
 			m.normal = glm::vec3(0, -1, 0);

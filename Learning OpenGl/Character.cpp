@@ -21,3 +21,32 @@ void Character::draw(glm::mat4 &ViewProjectionMatrix, GLuint program){
 	glDrawArrays(GL_QUADS, 0, 24);
 	*/
 }
+void Character::update(float delta){
+
+	jumpTime += delta;
+	if (MAIN::KeyDown[' ']){
+		jumpRequest = true;
+		jumpTime = 0;
+	}
+	if (jumpTime > delta * 15){
+		jumpRequest = false;
+		jumpTime = 0;
+	}
+	if (jumpRequest){
+		bool onTopAny = false;
+		for (int i = 0; i < (signed)touching.size(); i++){
+			Body b = *touching[i];
+			//Dont ask why coords are so not fucked
+			if (pos.y - size.y / 2 + 0.2 >= b.pos.y + b.size.y / 2){
+				onTopAny = true;
+				break;
+			}
+		}
+		if (onTopAny){
+			jumpRequest = false;
+			jumpTime = 0;
+			velocity.y += 10;
+		}
+	}
+	Body::update(delta);
+}

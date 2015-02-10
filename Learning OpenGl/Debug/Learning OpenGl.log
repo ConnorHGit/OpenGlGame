@@ -1,4 +1,4 @@
-﻿Build started 2015-01-26 9:55:54 PM.
+﻿Build started 2015-02-10 4:54:21 PM.
      1>Project "C:\Users\Connor\Source\Repos\OpenGlGame3\Learning OpenGl\Learning OpenGl.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\Connor\Source\Repos\OpenGlGame3\packages\DevIL.1.7.8\build\native\../..//build/native/include/ /IC:\Users\Connor\Source\Repos\OpenGlGame3\packages\glfw.3.0.4.3\build\native\../..//build/native/include/ /IC:\Users\Connor\Source\Repos\OpenGlGame3\packages\glm.0.9.6.1\build\native\../..//build/native/include/ /IC:\Users\Connor\Source\Repos\OpenGlGame3\packages\nupengl.core.0.0.0.1\build\native\../..//build/native/include/ /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D GLFW_DLL /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Character.cpp Main.cpp
@@ -6,14 +6,14 @@
      1>c:\users\connor\source\repos\openglgame3\learning opengl\physics\body.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
      1>c:\users\connor\source\repos\openglgame3\learning opengl\physics\manifold.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
      1>c:\users\connor\source\repos\openglgame3\learning opengl\physics\manifold.h(3): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(65): warning C4305: 'argument' : truncation from 'double' to 'GLclampf'
+     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(66): warning C4305: 'argument' : truncation from 'double' to 'GLclampf'
      1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(78): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(157): warning C4244: 'initializing' : conversion from 'long' to 'unsigned short', possible loss of data
-     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(200): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(201): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(202): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(203): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(204): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(161): warning C4244: 'initializing' : conversion from 'long' to 'unsigned short', possible loss of data
+     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(205): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(206): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(207): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(208): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\connor\source\repos\openglgame3\learning opengl\main.cpp(209): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
          Generating Code...
          Skipping... (no relevant changes detected)
          Character.cpp
