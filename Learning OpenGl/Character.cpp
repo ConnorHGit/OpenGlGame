@@ -11,15 +11,9 @@ Character::Character() : Body(){
 	
 }
 void Character::draw(glm::mat4 &ViewProjectionMatrix, GLuint program){
-	/*
-	glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), pos);
-	ModelMatrix = glm::scale<float>(ModelMatrix, size);
-
-
-	glm::mat4 MVP = ViewProjectionMatrix * ModelMatrix;
-	glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, false, &MVP[0][0]);
-	glDrawArrays(GL_QUADS, 0, 24);
-	*/
+	if (MAIN::thirdperson != 0){
+		Body::draw(ViewProjectionMatrix, program);
+	}
 }
 void Character::update(float delta){
 
@@ -45,8 +39,9 @@ void Character::update(float delta){
 		if (onTopAny){
 			jumpRequest = false;
 			jumpTime = 0;
-			velocity.y += 10;
+			velocity.y += 20;
 		}
 	}
+
 	Body::update(delta);
 }

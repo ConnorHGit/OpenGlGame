@@ -149,7 +149,47 @@ void GameModels::CreateCubeModel(const std::string& gameModelName){
 	Model myModel;
 	myModel.vao = vao;
 	myModel.vbos.push_back(vbo);
-	//myModel.vbos.push_back(vbo2);
+	myModel.vbos.push_back(vbo2);
+	GameModelList[gameModelName] = myModel;
+}
+void GameModels::CreateSquareModel(const std::string& gameModelName){
+	unsigned int vao;
+	unsigned int vbo;
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	std::vector<glm::vec3> verticies;
+
+	verticies.push_back(glm::vec3(-0.5f, 0.5f, 0.5));
+	verticies.push_back(glm::vec3(0.5f, 0.5f, 0.5));
+	verticies.push_back(glm::vec3(0.5f, -0.5f, 0.5));
+	verticies.push_back(glm::vec3(-0.5f, -0.5f, 0.5f));
+
+	float UV_DATA[8] = {
+		0,0,
+		1,0,
+		1,1,
+		0,1
+	};
+
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * verticies.size(), &verticies[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0); 
+	
+	unsigned int vbo2;
+	glGenBuffers(1, &vbo2);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * 8, &UV_DATA[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
+
+	Model myModel;
+	myModel.vao = vao;
+	myModel.vbos.push_back(vbo);
+	myModel.vbos.push_back(vbo2);
 	GameModelList[gameModelName] = myModel;
 }
 void GameModels::DeleteModel(const std::string& gameModelName){

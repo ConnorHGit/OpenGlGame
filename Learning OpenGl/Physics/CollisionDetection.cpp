@@ -3,7 +3,7 @@
 Manifold detect(Body* a, Body* b);
 void CollisionDetection::Broadphase(std::vector<Body*>* bodies){
 	std::vector<Manifold> manifolds;
-	for (signed int i = 0; i < (signed)(bodies->size() - 1); i++){
+	for (signed int i = 0; i < (signed)(bodies->size()); i++){
 		(*bodies)[i]->touching.clear();
 	}
 	for (signed int i = 0; i < (signed)(bodies->size() - 1); i++){
@@ -15,7 +15,6 @@ void CollisionDetection::Broadphase(std::vector<Body*>* bodies){
 			if (m.collided){
 				m.a->touching.push_back(b);
 				m.b->touching.push_back(a);
-				//std::cout << "Collided" << std::endl;
 				manifolds.push_back(m);
 			}
 		}

@@ -19,6 +19,7 @@
 #include "Physics\CollisionDetection.h"
 #include "LodePNG\lodepng.h"
 #include "Character.h"
+#include "Physics\BodyList.h"
 Models::GameModels* gameModels;
 
 using namespace Core;
@@ -35,7 +36,7 @@ glm::mat4 ProjectionMatrix;
 
 glm::vec3 MousePosition;
 
-std::vector<Body*> cubes;
+BodyList cubes;
 
 bool KeyDown[127];
 
@@ -60,6 +61,7 @@ float clamp(float min, float val, float max);
 void update(double delta);
 int getSign(float val);
 float reduceAbs(float val,float decrease);
+float thirdperson = 0;
 glm::vec3 printVec(glm::vec3 print,char* mes);
 	void renderScene(void) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -68,16 +70,21 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 			CameraRotation += glm::vec3(-MousePosition.x / 1000, -MousePosition.y / 1000, 0);
 			glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_WIDTH) / 2);
 		}
-		ViewMatrix = GetRotationMatrix(CameraRotation) * glm::translate(glm::mat4(1.0f), (player.pos + glm::vec3(0,player.size.y,0)) * glm::vec3(-1, -1, -1));
+		ViewMatrix = GetRotationMatrix(CameraRotation);
+		ViewMatrix = glm::translate(ViewMatrix, (player.pos + glm::vec3(0, player.size.y, 0)) * glm::vec3(-1, -1, -1) + CameraForward(ViewMatrix) * thirdperson);
 		glm::mat4 ProjectionViewMatrix = ProjectionMatrix * ViewMatrix;
 
 		//use the created program
 		glUseProgram(program);
-
 		glBindVertexArray(gameModels->GetModel("cube1"));
-		for (int i = 0; i < cubes.size(); i++){
-			cubes[i]->draw(ProjectionViewMatrix, program);
-		}
+		cubes.drawBodies(ProjectionViewMatrix, program);
+
+		glBindVertexArray(gameModels->GetModel("square1"));
+		glBindTexture(GL_TEXTURE_2D, textures["Crosshair"]);
+
+		glm::mat4 PositionMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f,0.1f * 4.0f / 3.0f,0.1f));
+		glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, false, &PositionMatrix[0][0]);
+		glDrawArrays(GL_QUADS, 0, 4);
 
 		glutSwapBuffers();
 	}
@@ -100,9 +107,13 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
 
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		gameModels = new Models::GameModels();
 		//gameModels->CreateTriangleModel("triangle1");
 		gameModels->CreateCubeModel("cube1");
+		gameModels->CreateSquareModel("square1");
 		//load and compile shaders
 		Core::Shader_Loader shaderLoader;
 		program = shaderLoader.CreateProgram("Shaders\\Vertex_Shader.glsl",
@@ -114,18 +125,14 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		ProjectionMatrix = glm::perspective<float>(1.084719755f, 4.0f / 3.0f, 0.1f, 10000.f);
 		CameraPosition = glm::vec3(0, 0, -10.0f);
 		CameraRotation = glm::vec3(0.01f, 0.01f, 0.01f);
-		Body ground = Body(2, 0, 1, 100, 50, 100,"Floor");
-		ground.setMass(0);
-		cubes.push_back(&ground);
+
+		
+		Body* ground = cubes.add(2, 0, 1, 100, 50, 100, "Grass");
+		ground->setMass(0);
 		player = Character(30, 5 , 30, 1, 1, 1,"Brick");
-		player.acceleration = glm::vec3(0, -0.03, 0);
-		cubes.push_back(&player);
-		Body b = Body(30, 200,30, 1, 1, 1,"Grass");
-		//b.setMass(0);
-		b.acceleration = glm::vec3(0, -0.03, 0);
-		cubes.push_back(&b);
-	//	c.setMass(0);
-	//	c.acceleration = glm::vec3(0, -0.03, 0);
+		player.acceleration = glm::vec3(0, -0.05, 0);
+		cubes.add(&player);
+
 		glutInit(&argc, argv);
 		glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 		glutInitWindowPosition(100, 100);
@@ -140,6 +147,8 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		LoadTexture("Brick", "Assets/Brick.png");
 		LoadTexture("Grass", "Assets/Grass.png");
 		LoadTexture("Floor", "Assets/Floor.png");
+		LoadTexture("Crosshair", "Assets/Crosshair.png");
+
 		// register callbacks
 		glutCloseFunc(closeCallback);
 		glutKeyboardFunc(keyPressed);
@@ -176,6 +185,7 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 				std::cout << "FPS:" << i << std::endl;
 				i = 0;
 				std::cout << "Thing" << GetTickCount() - start << std::endl;
+				printVec(player.pos, "Player Pos:");
 			}
 
 			//END FPS Stuff
@@ -202,17 +212,20 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		if (KeyDown['a']) player.pos += (CameraRight(ViewMatrix) * glm::vec3(0.6f) * glm::vec3(-1, 0, -1));
 
 		if (KeyDown['d']) player.pos -= (CameraRight(ViewMatrix) * glm::vec3(0.6f) * glm::vec3(-1, 0, -1));
+
 		player.velocity.x = reduceAbs(player.velocity.x, 0.2);
 		player.velocity.y = reduceAbs(player.velocity.y, 0.2);
 		player.velocity.z = reduceAbs(player.velocity.z, 0.2);
-		for (int i = 0; i < cubes.size(); i++){
-			cubes[i]->update(delta);
-		}
-		CollisionDetection::Broadphase(&cubes);
+
+		cubes.updateBodies(delta);
+		CollisionDetection::Broadphase(cubes);
 	}
 
 	void keyPressed(unsigned char key, int x, int y){
 		KeyDown[key] = true;
+		if (key == 't'){
+			thirdperson = thirdperson == 0 ? -2 : 0;
+		}
 	}
 	void keyUp(unsigned char key, int x, int y){
 		KeyDown[key] = false;
@@ -286,13 +299,14 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 	void MAIN::LoadTexture(char* textname, char* imgpath){ 
 		unsigned char* imgData;
 		unsigned int w, h;
-		unsigned err = lodepng_decode24_file(&imgData, &w, &h, imgpath);
+
+		unsigned err = lodepng_decode32_file(&imgData, &w, &h, imgpath);
 		if (err) std::cout << "decoder error " << err << ": " << lodepng_error_text(err) << std::endl;
 
 		GLuint textID;
 		glGenTextures(1, &textID);
 		glBindTexture(GL_TEXTURE_2D, textID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, imgData);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glGenerateMipmap(GL_TEXTURE_2D);
