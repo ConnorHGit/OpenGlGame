@@ -12,4 +12,6 @@ public:
 	virtual void update(float delta);
 	bool jumpRequest;
 	long jumpTime;
+private:
+	Body* getGround();
 };

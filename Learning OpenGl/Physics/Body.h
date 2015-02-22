@@ -20,6 +20,7 @@ public:
 	glm::vec3 size;
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
+	bool tangible;
 	std::vector<Body*> touching;
 	char* texture;
 	double restitution;

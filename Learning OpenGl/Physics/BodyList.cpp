@@ -23,7 +23,7 @@ Body* BodyList::add(float x, float y, float z, float width, float height, float 
 }
 Body* BodyList::add(glm::vec3 pos, glm::vec3 size, glm::vec3 speed, char* text){
 	Body* b = new Body(pos, size, text);
-	b->velocity = speed;
+	b->velocity = glm::vec3(speed.x,speed.y,speed.z);
 	bodies.push_back(b);
 	return bodies[bodies.size() - 1];
 }

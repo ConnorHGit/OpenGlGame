@@ -16,7 +16,7 @@ void Character::draw(glm::mat4 &ViewProjectionMatrix, GLuint program){
 	}
 }
 void Character::update(float delta){
-
+	Body* ground = getGround();
 	jumpTime += delta;
 	if (MAIN::KeyDown[' ']){
 		jumpRequest = true;
@@ -27,21 +27,21 @@ void Character::update(float delta){
 		jumpTime = 0;
 	}
 	if (jumpRequest){
-		bool onTopAny = false;
-		for (int i = 0; i < (signed)touching.size(); i++){
-			Body b = *touching[i];
-			//Dont ask why coords are so not fucked
-			if (pos.y - size.y / 2 + 0.2 >= b.pos.y + b.size.y / 2){
-				onTopAny = true;
-				break;
-			}
-		}
-		if (onTopAny){
+		if (ground != NULL){
 			jumpRequest = false;
 			jumpTime = 0;
 			velocity.y += 20;
 		}
 	}
-
+	Body::tangible = !MAIN::noclip;
 	Body::update(delta);
+}
+Body* Character::getGround(){
+	for (int i = 0; i < (signed)touching.size(); i++){
+		Body b = *touching[i];
+		if (pos.y - size.y / 2 + 0.2 >= b.pos.y + b.size.y / 2){
+			return &b;
+		}
+	}
+	return NULL;
 }

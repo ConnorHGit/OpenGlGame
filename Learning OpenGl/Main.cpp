@@ -20,11 +20,17 @@
 #include "LodePNG\lodepng.h"
 #include "Character.h"
 #include "Physics\BodyList.h"
+
+
 Models::GameModels* gameModels;
 
 using namespace Core;
 
 GLuint program;
+
+
+unsigned WIDTH;
+unsigned HEIGHT;
 
 glm::vec3 CameraPosition;
 glm::vec3 CameraRotation;
@@ -41,6 +47,8 @@ BodyList cubes;
 bool KeyDown[127];
 
 bool stop;
+
+bool noclip;
 
 float delta;
 
@@ -63,6 +71,8 @@ int getSign(float val);
 float reduceAbs(float val,float decrease);
 float thirdperson = 0;
 glm::vec3 printVec(glm::vec3 print,char* mes);
+float getAspect(){ return (float)WIDTH / HEIGHT; };
+void exitFullscreen(){ WIDTH = 800; HEIGHT = 600; glutReshapeWindow(800, 600); };
 	void renderScene(void) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.25882352941176470588235294117647, 0.38431372549019607843137254901961 , 1.0, 1.0);//clear sky blue
@@ -71,7 +81,7 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 			glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_WIDTH) / 2);
 		}
 		ViewMatrix = GetRotationMatrix(CameraRotation);
-		ViewMatrix = glm::translate(ViewMatrix, (player.pos + glm::vec3(0, player.size.y, 0)) * glm::vec3(-1, -1, -1) + CameraForward(ViewMatrix) * thirdperson);
+		ViewMatrix = glm::translate(ViewMatrix, (player.pos) * glm::vec3(-1, -1, -1) + CameraForward(ViewMatrix) * thirdperson);
 		glm::mat4 ProjectionViewMatrix = ProjectionMatrix * ViewMatrix;
 
 		//use the created program
@@ -82,7 +92,7 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		glBindVertexArray(gameModels->GetModel("square1"));
 		glBindTexture(GL_TEXTURE_2D, textures["Crosshair"]);
 
-		glm::mat4 PositionMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f,0.1f * 4.0f / 3.0f,0.1f));
+		glm::mat4 PositionMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f,0.1f * getAspect(),0.1f));
 		glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, false, &PositionMatrix[0][0]);
 		glDrawArrays(GL_QUADS, 0, 4);
 
@@ -91,7 +101,9 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 
 	void MousePressed(int button, int state, int x, int y){
 		if (state == GLUT_LEFT_BUTTON){
-			
+			glm::vec3 dir = CameraForward(ViewMatrix);
+			Body* proj = cubes.add(player.pos - dir, glm::vec3(0.1, 0.1, 0.1) , (dir * -0.1f) - player.velocity * player.getInverseMass(), "Grass");	
+			proj->setMass(1);
 		}
 	}
 
@@ -122,21 +134,25 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 	}
 
 	int main(int argc, char **argv) {
-		ProjectionMatrix = glm::perspective<float>(1.084719755f, 4.0f / 3.0f, 0.1f, 10000.f);
+		WIDTH = GetSystemMetrics(SM_CXSCREEN);
+		HEIGHT = GetSystemMetrics(SM_CYSCREEN);
+	
+		ProjectionMatrix = glm::perspective<float>(1.084719755f, getAspect(), 0.1f, 10000.f);
 		CameraPosition = glm::vec3(0, 0, -10.0f);
 		CameraRotation = glm::vec3(0.01f, 0.01f, 0.01f);
 
 		
-		Body* ground = cubes.add(2, 0, 1, 100, 50, 100, "Grass");
+		Body* ground = cubes.add(2, 0, 1, 100, 10, 100, "Floor");
 		ground->setMass(0);
-		player = Character(30, 5 , 30, 1, 1, 1,"Brick");
+		player = Character(30, 5 , 30, 1, 2, 1,"Brick");
 		player.acceleration = glm::vec3(0, -0.05, 0);
 		cubes.add(&player);
-
+		Body* secondplat = cubes.add(4, 1, 1, 10, 100, 10, "Brick");
+		secondplat->setMass(0);
 		glutInit(&argc, argv);
 		glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 		glutInitWindowPosition(100, 100);
-		glutInitWindowSize(1024, 768);
+		glutInitWindowSize(WIDTH, HEIGHT);
 		glutCreateWindow("Open GL Game");
 		glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
@@ -144,6 +160,8 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 
 		Init();
 
+		glutFullScreen();
+		
 		LoadTexture("Brick", "Assets/Brick.png");
 		LoadTexture("Grass", "Assets/Grass.png");
 		LoadTexture("Floor", "Assets/Floor.png");
@@ -178,15 +196,15 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 			}
 
 			//FPS Stuff
-			j += delta;
-			i++;
-			if (j > 1000){
-				j = 0;
-				std::cout << "FPS:" << i << std::endl;
-				i = 0;
-				std::cout << "Thing" << GetTickCount() - start << std::endl;
-				printVec(player.pos, "Player Pos:");
-			}
+		//	j += delta;
+		//	i++;
+		//	if (j > 1000){
+		//		j = 0;
+		//		std::cout << "FPS:" << i << std::endl;
+		//		i = 0;
+		//		std::cout << "Thing" << GetTickCount() - start << std::endl;
+		//		printVec(player.pos, "Player Pos:");
+		//	}
 
 			//END FPS Stuff
 			renderScene();
@@ -195,23 +213,21 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		
 			std::this_thread::sleep_for(std::chrono::milliseconds((int)fmax(8 - (signed)(GetTickCount() - start), 0)));
 		}
-
+		
 		delete gameModels;
 		glDeleteProgram(program);
 
 		return 0;
-
-
 	}
 
 	void update(double delta){
-		if (KeyDown['w']) player.pos += (CameraForward(ViewMatrix) * glm::vec3(0.6f) * glm::vec3(-1, 0, -1));
+		if (KeyDown['w']) player.pos += (CameraForward(ViewMatrix) * glm::vec3(0.6f) * (MAIN::noclip ? glm::vec3(1) : glm::vec3(-1, 0, -1)));
 
-		if (KeyDown['s']) player.pos -= (CameraForward(ViewMatrix) * glm::vec3(0.6f) * glm::vec3(-1, 0, -1));
+		if (KeyDown['s']) player.pos -= (CameraForward(ViewMatrix) * glm::vec3(0.6f) * (MAIN::noclip ? glm::vec3(1) : glm::vec3(-1, 0, -1)));
 
-		if (KeyDown['a']) player.pos += (CameraRight(ViewMatrix) * glm::vec3(0.6f) * glm::vec3(-1, 0, -1));
+		if (KeyDown['a']) player.pos += (CameraRight(ViewMatrix) * glm::vec3(0.6f) * (MAIN::noclip ? glm::vec3(1) : glm::vec3(-1, 0, -1)));
 
-		if (KeyDown['d']) player.pos -= (CameraRight(ViewMatrix) * glm::vec3(0.6f) * glm::vec3(-1, 0, -1));
+		if (KeyDown['d']) player.pos -= (CameraRight(ViewMatrix) * glm::vec3(0.6f) * (MAIN::noclip ? glm::vec3(1) : glm::vec3(-1, 0, -1)));
 
 		player.velocity.x = reduceAbs(player.velocity.x, 0.2);
 		player.velocity.y = reduceAbs(player.velocity.y, 0.2);
@@ -224,7 +240,13 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 	void keyPressed(unsigned char key, int x, int y){
 		KeyDown[key] = true;
 		if (key == 't'){
-			thirdperson = thirdperson == 0 ? -2 : 0;
+			thirdperson = thirdperson == 0 ? -3 : 0;
+		}
+		else if (key == 'n'){
+			noclip = !noclip;
+		}
+		else if (key == 'j'){
+			exitFullscreen();
 		}
 	}
 	void keyUp(unsigned char key, int x, int y){
@@ -313,3 +335,4 @@ glm::vec3 printVec(glm::vec3 print,char* mes);
 		glUniform1i(glGetUniformLocation(program, "textSamp"), 0);
 		textures.insert(std::pair<char*, GLuint>(textname, textID));
 	}
+	

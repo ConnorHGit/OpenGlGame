@@ -10,6 +10,7 @@ void CollisionDetection::Broadphase(std::vector<Body*>* bodies){
 		Body* a = (*bodies)[i];
 		for (signed int j = i + 1; j < (signed)(bodies->size()); j++){
 			Body* b = (*bodies)[j];
+			if (a->tangible == false || b->tangible == false)continue;
 			if (a->getMass() == 0 && b->getMass() == 0)continue;
 			Manifold m = detect(a, b);
 			if (m.collided){

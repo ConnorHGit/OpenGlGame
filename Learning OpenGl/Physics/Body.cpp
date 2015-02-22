@@ -8,6 +8,7 @@ Body::Body(glm::vec3 pos, glm::vec3 size,char* text){
 	Body::pos = pos;
 	Body::size = size;
 	Body::texture = text;
+	tangible = true;
 }
 Body::Body(float x, float y, float z, float width, float height, float depth,char* text){
 	pos = glm::vec3(x, y , z);
@@ -15,12 +16,13 @@ Body::Body(float x, float y, float z, float width, float height, float depth,cha
 	setMass(size.x * size.y * size.z * 10);
 	restitution = 0;
 	Body::texture = text;
+	tangible = true;
 }
 Body::~Body(){
 
 }
 Body::Body(){
-
+	tangible = true;
 }
 void Body::update(float delta){
 	velocity += acceleration * delta;
